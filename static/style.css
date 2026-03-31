@@ -17,7 +17,6 @@ body {
     position: relative;
 }
 
-/* animated grain texture (subtle) */
 body::before {
     content: "";
     position: fixed;
@@ -31,7 +30,6 @@ body::before {
     z-index: 0;
 }
 
-/* main glass card */
 .optimizer-card {
     background: rgba(12, 20, 35, 0.65);
     backdrop-filter: blur(18px);
@@ -57,7 +55,6 @@ body::before {
     }
 }
 
-/* header with icon */
 .card-header {
     display: flex;
     align-items: center;
@@ -92,7 +89,6 @@ h2 {
     letter-spacing: 0.2px;
 }
 
-/* form styling */
 .input-group {
     margin-bottom: 1.4rem;
     position: relative;
@@ -144,7 +140,6 @@ input[type=number]::-webkit-outer-spin-button {
     opacity: 0.5;
 }
 
-/* button premium with Indian tricolor inspiration */
 .optimize-btn {
     background: linear-gradient(105deg, #1E3A5F 0%, #0F2B44 40%, #FF9933 100%);
     border: none;
@@ -181,7 +176,6 @@ input[type=number]::-webkit-outer-spin-button {
     transform: translateY(1px);
 }
 
-/* result section */
 .result-panel {
     margin-top: 2rem;
     background: rgba(0, 0, 0, 0.35);
