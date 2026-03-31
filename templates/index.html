@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>AdVantage | Knapsack Budget Optimizer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Google Fonts + Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+<div class="optimizer-card">
+    <div class="card-header">
+        <i class="fas fa-chart-line"></i>
+        <div>
+            <h2>AdVantage Optimizer</h2>
+        </div>
+    </div>
+    <div class="sub">
+        <i class="fas fa-calculator" style="font-size: 0.7rem;"></i> Knapsack precision · max ROI (₹)
+    </div>
+
+    <form method="POST">
+        <div class="input-group">
+            <label><i class="fas fa-hashtag"></i> Number of ad campaigns</label>
+            <input type="number" name="n" placeholder="e.g., 5" required min="1" value="{{ request.form.get('n', '') }}">
+        </div>
+
+        <div class="input-group">
+            <label><i class="fas fa-rupee-sign"></i> Costs (space separated)</label>
+            <input type="text" name="cost" placeholder="Example: 150 300 450 200 100" required value="{{ request.form.get('cost', '') }}">
+        </div>
+
+        <div class="input-group">
+            <label><i class="fas fa-chart-simple"></i> Profits (space separated)</label>
+            <input type="text" name="profit" placeholder="Example: 70 120 200 80 60" required value="{{ request.form.get('profit', '') }}">
+        </div>
+
+        <div class="input-group">
+            <label><i class="fas fa-wallet"></i> Total budget (₹)</label>
+            <input type="number" name="budget" placeholder="e.g., 600" required min="1" value="{{ request.form.get('budget', '') }}">
+        </div>
+
+        <button type="submit" class="optimize-btn">
+            <i class="fas fa-rocket"></i> Optimize campaign
+        </button>
+        <div class="helper-note">
+            <span><i class="fas fa-lightbulb"></i> 0/1 knapsack logic</span>
+            <span><i class="fas fa-chart-pie"></i> Max profit under budget</span>
+        </div>
+    </form>
+
+    {% if result is not none and result != '' %}
+    <div class="result-panel">
+        <div class="profit-card">
+            <div class="profit-label">
+                <i class="fas fa-rupee-sign"></i> MAXIMUM PROFIT
+            </div>
+            <div class="profit-value">
+                ₹ {{ result }} <span style="font-size: 1rem;">📈</span>
+            </div>
+        </div>
+        
+        <div class="selected-section">
+            <div class="selected-title">
+                <i class="fas fa-check-circle"></i> SELECTED ADS (Index)
+                <i class="fas fa-tag" style="font-size: 0.7rem;"></i>
+            </div>
+            <div class="ads-badge-list">
+                {% if selected_ads %}
+                    {% if selected_ads is iterable and selected_ads is not string %}
+                        {% for ad_index in selected_ads %}
+                            <div class="ad-badge"><i class="fas fa-ad"></i> Ad #{{ ad_index }}</div>
+                        {% endfor %}
+                    {% else %}
+                        {# handle string representation like "[0, 2, 3]" or "0,1,2" #}
+                        {% set ads_str = selected_ads|string %}
+                        {% if '[' in ads_str and ']' in ads_str %}
+                            {% set clean = ads_str.strip('[]') %}
+                            {% for idx in clean.split(',') %}
+                                {% set idx_val = idx.strip() %}
+                                {% if idx_val.isdigit() %}
+                                    <div class="ad-badge"><i class="fas fa-ad"></i> Ad #{{ idx_val }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% elif ',' in ads_str %}
+                            {% for idx in ads_str.split(',') %}
+                                {% set idx_val = idx.strip() %}
+                                {% if idx_val.isdigit() %}
+                                    <div class="ad-badge"><i class="fas fa-ad"></i> Ad #{{ idx_val }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <div class="ad-badge"><i class="fas fa-ad"></i> {{ selected_ads }}</div>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <div class="fallback-text"><i class="fas fa-info-circle"></i> No ads selected (profit zero or invalid)</div>
+                {% endif %}
+            </div>
+            <div class="helper-note" style="justify-content: flex-start; margin-top: 12px;">
+                <i class="fas fa-chart-line" style="font-size: 0.7rem;"></i> campaigns that fit budget
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
